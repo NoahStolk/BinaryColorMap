@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace BinaryColorMap
 {
@@ -22,28 +23,42 @@ namespace BinaryColorMap
 			Pixels = new byte[FrameCount, Width, Height];
 		}
 
-		public byte[] ToBinary()
+		public byte[] GetPixelData()
 		{
-			byte[] output = new byte[4 + Colors.Count * 4 + Pixels.Length];
-			output[0] = FrameCount;
-			output[1] = Width;
-			output[2] = Height;
-			output[3] = ColorCount;
+			byte[] pixelData = new byte[4 + Pixels.Length];
 
-			for (int i = 0; i < ColorCount; i++)
-			{
-				output[4 + i * 4] = Colors[i].R;
-				output[4 + i * 4 + 1] = Colors[i].G;
-				output[4 + i * 4 + 2] = Colors[i].B;
-				output[4 + i * 4 + 3] = Colors[i].A;
-			}
+			pixelData[0] = FrameCount;
+			pixelData[1] = Width;
+			pixelData[2] = Height;
+			pixelData[3] = ColorCount;
 
 			for (int i = 0; i < FrameCount; i++)
 				for (int j = 0; j < Width; j++)
 					for (int k = 0; k < Height; k++)
-						output[4 + ColorCount * 4 + i * Width * Height + j * Height + k] = Pixels[i, j, k];
+						pixelData[4 + i * Width * Height + j * Height + k] = Pixels[i, j, k];
 
-			return output;
+			return pixelData;
+		}
+
+		public byte[] GetPaletteData()
+		{
+			byte[] paletteData = new byte[Colors.Count * 4];
+
+			for (int i = 0; i < ColorCount; i++)
+			{
+				paletteData[i * 4] = Colors[i].R;
+				paletteData[i * 4 + 1] = Colors[i].G;
+				paletteData[i * 4 + 2] = Colors[i].B;
+				paletteData[i * 4 + 3] = Colors[i].A;
+			}
+
+			return paletteData;
+		}
+
+		public void Write(string path, string fileName)
+		{
+			File.WriteAllBytes(Path.Combine(path, $"{fileName}.bcm"), GetPixelData());
+			File.WriteAllBytes(Path.Combine(path, $"{fileName}.bcp"), GetPaletteData());
 		}
 	}
 }
