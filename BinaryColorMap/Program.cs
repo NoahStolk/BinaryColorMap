@@ -1,15 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace BinaryColorMap
 {
-	class Program
+	public static class Program
 	{
-		static void Main(string[] args)
+		public static void Main()
 		{
+			foreach (string path in Directory.GetFiles("Content"))
+			{
+				BinaryColorMap bcm = PngConverter.ConvertPngToBcm(path, 1);
+				byte[] result = bcm.ToBinary();
+				File.WriteAllBytes($"{Path.GetFileNameWithoutExtension(path)}.bcm", result);
+
+				Console.WriteLine(Path.GetFileNameWithoutExtension(path));
+				Console.WriteLine($"PNG size: {new FileInfo(path).Length} bytes.");
+				Console.WriteLine($"BCM size: {result.Length} bytes. ({bcm.Pixels.Length} pixels, {bcm.ColorCount} colors)");
+				Console.WriteLine();
+			}
 		}
 	}
 }
