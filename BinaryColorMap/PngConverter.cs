@@ -9,7 +9,7 @@ namespace BinaryColorMap
 		{
 			Bitmap bitmap = new Bitmap(pngPath);
 
-			if (bitmap.Width / frameCount > byte.MaxValue || bitmap.Height > byte.MaxValue) // Assuming frames are displayed horizontally
+			if (bitmap.Width / frameCount > byte.MaxValue || bitmap.Height > byte.MaxValue) // Assuming frames are displayed horizontally.
 				throw new Exception($"BCM format doesn't support images with a width or height greater than {byte.MaxValue} pixels for now.");
 
 			BinaryColorMap bcm = new BinaryColorMap(frameCount, (byte)bitmap.Width, (byte)bitmap.Height);
