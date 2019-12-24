@@ -1,4 +1,5 @@
 ﻿using NetBase.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,33 +40,72 @@ namespace BinaryColorMap
 
 		public byte[] GetPixelData()
 		{
-			byte[] pixelData = new byte[HeaderSize + PixelData.Length];
-
-			pixelData[0] = FrameCount;
-			pixelData[1] = ColorCount;
-			pixelData[2] = Width;
-			pixelData[3] = Height;
-			pixelData[4] = OriginX;
-			pixelData[5] = OriginY;
-
+			byte[] pixelData = new byte[PixelData.Length];
 			for (int i = 0; i < FrameCount; i++)
 				for (int j = 0; j < Width; j++)
 					for (int k = 0; k < Height; k++)
-						pixelData[HeaderSize + i * Width * Height + j * Height + k] = PixelData[i, j, k];
+						pixelData[i * Width * Height + j * Height + k] = PixelData[i, j, k];
 
-			return pixelData;
+			byte[] pixelNibbles = ConvertByteArrayToNibbleArray(pixelData);
+
+			byte[] finalData = new byte[HeaderSize + pixelNibbles.Length];
+
+			finalData[0] = FrameCount;
+			finalData[1] = ColorCount;
+			finalData[2] = Width;
+			finalData[3] = Height;
+			finalData[4] = OriginX;
+			finalData[5] = OriginY;
+
+			Buffer.BlockCopy(pixelNibbles, 0, finalData, HeaderSize, pixelNibbles.Length);
+
+			return finalData;
 		}
 
 		public static Bcm Create(byte[] pixelData)
 		{
 			Bcm bcm = new Bcm(pixelData[0], pixelData[2], pixelData[3], pixelData[4], pixelData[5]);
 
+			byte[] pixelNibbles = new byte[(pixelData.Length - HeaderSize)];
+			Buffer.BlockCopy(pixelData, HeaderSize, pixelNibbles, 0, pixelNibbles.Length);
+
+			byte[] pixelBytes = ConvertNibbleArrayToByteArray(pixelNibbles);
+
 			for (int i = 0; i < bcm.FrameCount; i++)
 				for (int j = 0; j < bcm.Width; j++)
 					for (int k = 0; k < bcm.Height; k++)
-						bcm.PixelData[i, j, k] = pixelData[HeaderSize + i * bcm.Width * bcm.Height + j * bcm.Height + k];
+						bcm.PixelData[i, j, k] = pixelBytes[i * bcm.Width * bcm.Height + j * bcm.Height + k];
 
 			return bcm;
+		}
+
+		private static byte[] ConvertNibbleArrayToByteArray(byte[] nibbles)
+		{
+			byte[] bytes = new byte[nibbles.Length * 2];
+			for (int i = 0; i < nibbles.Length; i++)
+			{
+				byte nibble2 = (byte)(nibbles[i] & 0x0F);
+				byte nibble1 = (byte)((nibbles[i] & 0xF0) >> 4);
+
+				bytes[i * 2] = nibble1;
+				bytes[i * 2 + 1] = nibble2;
+			}
+			return bytes;
+		}
+
+		private static byte[] ConvertByteArrayToNibbleArray(byte[] bytes)
+		{
+			byte[] nibbles = new byte[bytes.Length / 2];
+			for (int i = 0; i < bytes.Length; i += 2)
+			{
+				byte byte1 = bytes[i];
+				byte byte2 = bytes[i + 1];
+
+				byte nibble1 = (byte)(byte1 & 0x0F);
+				byte nibble2 = (byte)(byte2 & 0x0F);
+				nibbles[i / 2] = (byte)((nibble1 << 4) | nibble2);
+			}
+			return nibbles;
 		}
 	}
 }
