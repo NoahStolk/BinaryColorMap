@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NetBase.Utils;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -32,6 +33,7 @@ namespace BinaryColorMap
 
 		public void WritePixelData(string path, string fileName)
 		{
+			FileUtils.CreateDirectoryIfNotExists(path);
 			File.WriteAllBytes(Path.Combine(path, $"{fileName}.bcm"), GetPixelData());
 		}
 
