@@ -40,34 +40,34 @@ namespace BinaryColorMap
 
 		public byte[] GetPixelData()
 		{
-			byte[] pixelData = new byte[PixelData.Length];
+			byte[] pixelBytes = new byte[PixelData.Length];
 			for (int i = 0; i < FrameCount; i++)
 				for (int j = 0; j < Width; j++)
 					for (int k = 0; k < Height; k++)
-						pixelData[i * Width * Height + j * Height + k] = PixelData[i, j, k];
+						pixelBytes[i * Width * Height + j * Height + k] = PixelData[i, j, k];
 
-			byte[] pixelNibbles = ConvertByteArrayToNibbleArray(pixelData);
+			byte[] pixelNibbles = ConvertByteArrayToNibbleArray(pixelBytes);
 
-			byte[] finalData = new byte[HeaderSize + pixelNibbles.Length];
+			byte[] data = new byte[HeaderSize + pixelNibbles.Length];
 
-			finalData[0] = FrameCount;
-			finalData[1] = ColorCount;
-			finalData[2] = Width;
-			finalData[3] = Height;
-			finalData[4] = OriginX;
-			finalData[5] = OriginY;
+			data[0] = FrameCount;
+			data[1] = ColorCount;
+			data[2] = Width;
+			data[3] = Height;
+			data[4] = OriginX;
+			data[5] = OriginY;
 
-			Buffer.BlockCopy(pixelNibbles, 0, finalData, HeaderSize, pixelNibbles.Length);
+			Buffer.BlockCopy(pixelNibbles, 0, data, HeaderSize, pixelNibbles.Length);
 
-			return finalData;
+			return data;
 		}
 
-		public static Bcm Create(byte[] pixelData)
+		public static Bcm Create(byte[] data)
 		{
-			Bcm bcm = new Bcm(pixelData[0], pixelData[2], pixelData[3], pixelData[4], pixelData[5]);
+			Bcm bcm = new Bcm(data[0], data[2], data[3], data[4], data[5]);
 
-			byte[] pixelNibbles = new byte[(pixelData.Length - HeaderSize)];
-			Buffer.BlockCopy(pixelData, HeaderSize, pixelNibbles, 0, pixelNibbles.Length);
+			byte[] pixelNibbles = new byte[(data.Length - HeaderSize)];
+			Buffer.BlockCopy(data, HeaderSize, pixelNibbles, 0, pixelNibbles.Length);
 
 			byte[] pixelBytes = ConvertNibbleArrayToByteArray(pixelNibbles);
 
@@ -84,8 +84,8 @@ namespace BinaryColorMap
 			byte[] bytes = new byte[nibbles.Length * 2];
 			for (int i = 0; i < nibbles.Length; i++)
 			{
+				byte nibble1 = (byte)((nibbles[i] & 0xF0) >> 4); 
 				byte nibble2 = (byte)(nibbles[i] & 0x0F);
-				byte nibble1 = (byte)((nibbles[i] & 0xF0) >> 4);
 
 				bytes[i * 2] = nibble1;
 				bytes[i * 2 + 1] = nibble2;
