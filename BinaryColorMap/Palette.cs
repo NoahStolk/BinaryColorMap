@@ -55,5 +55,12 @@ namespace BinaryColorMap
 
 			return palette;
 		}
+
+		public static string GetPaletteNameFromPath(string path)
+		{
+			string fileName = Path.GetFileNameWithoutExtension(path);
+			string baseFileName = fileName.Substring(0, fileName.LastIndexOf('-'));
+			return fileName.Substring(baseFileName.Length + 1, fileName.Length - baseFileName.Length - 1);
+		}
 	}
 }
