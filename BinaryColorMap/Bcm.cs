@@ -84,7 +84,7 @@ namespace BinaryColorMap
 			byte[] bytes = new byte[nibbles.Length * 2];
 			for (int i = 0; i < nibbles.Length; i++)
 			{
-				byte nibble1 = (byte)((nibbles[i] & 0xF0) >> 4); 
+				byte nibble1 = (byte)((nibbles[i] & 0xF0) >> 4);
 				byte nibble2 = (byte)(nibbles[i] & 0x0F);
 
 				bytes[i * 2] = nibble1;

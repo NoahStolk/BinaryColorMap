@@ -40,7 +40,7 @@ namespace BinaryColorMap
 		public static Palette Create(string name, byte[] paletteData)
 		{
 			Palette palette = new Palette(name);
-			
+
 			for (int i = 0; i < paletteData.Length / 4; i++)
 			{
 				BcmColor color = new BcmColor
