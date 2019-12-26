@@ -107,5 +107,42 @@ namespace BinaryColorMap
 			}
 			return nibbles;
 		}
+
+		public (int x, int y, int width, int height) GetActualSizeBasedOnTransparency(byte transparentColorIndex, byte frameIndex)
+		{
+			int firstX = int.MaxValue;
+			int firstY = int.MaxValue;
+			for (int i = 0; i < Width; i++)
+			{
+				for (int j = 0; j < Height; j++)
+				{
+					if (PixelData[frameIndex, i, j] != transparentColorIndex)
+					{
+						if (i < firstX)
+							firstX = i;
+						if (j < firstY)
+							firstY = j;
+					}
+				}
+			}
+
+			int lastX = int.MinValue;
+			int lastY = int.MinValue;
+			for (int i = Width - 1; i >= 0; i--)
+			{
+				for (int j = Height - 1; j >= 0; j--)
+				{
+					if (PixelData[frameIndex, i, j] != transparentColorIndex)
+					{
+						if (i > lastX)
+							lastX = i;
+						if (j > lastY)
+							lastY = j;
+					}
+				}
+			}
+
+			return (firstX, firstY, lastX - firstX + 1, lastY - firstY + 1);
+		}
 	}
 }
