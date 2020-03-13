@@ -18,18 +18,7 @@ namespace BinaryColorMap
 			A = a;
 		}
 
-		public override bool Equals(object obj) =>
-			obj is BcmColor color
-			&&
-			(
-				(
-					A == 0 && color.A == 0
-				)
-				||
-				(
-					color.R == R && color.G == G && color.B == B && color.A == A
-				)
-			);
+		public override bool Equals(object obj) => obj is BcmColor color && ((A == 0 && color.A == 0) || (color.R == R && color.G == G && color.B == B && color.A == A));
 
 		public override int GetHashCode()
 		{
