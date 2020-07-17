@@ -1,5 +1,4 @@
-﻿using NetBase.Utils;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace BinaryColorMap
@@ -18,7 +17,9 @@ namespace BinaryColorMap
 
 		public void WritePaletteData(string path, string baseFileName)
 		{
-			FileUtils.CreateDirectoryIfNotExists(path);
+			string directory = Path.GetDirectoryName(path);
+			if (!Directory.Exists(directory))
+				Directory.CreateDirectory(path);
 			File.WriteAllBytes(Path.Combine(path, $"{baseFileName}-{Name}.bcp"), GetPaletteData());
 		}
 

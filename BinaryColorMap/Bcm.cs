@@ -1,5 +1,4 @@
-﻿using NetBase.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,7 @@ namespace BinaryColorMap
 {
 	public class Bcm
 	{
-		private const int HeaderSize = 6;
+		private const int headerSize = 6;
 
 		public byte FrameCount { get; private set; }
 		public byte Width { get; private set; }
@@ -34,7 +33,9 @@ namespace BinaryColorMap
 
 		public void WritePixelData(string path, string fileName)
 		{
-			FileUtils.CreateDirectoryIfNotExists(path);
+			string directory = Path.GetDirectoryName(path);
+			if (!Directory.Exists(directory))
+				Directory.CreateDirectory(path);
 			File.WriteAllBytes(Path.Combine(path, $"{fileName}.bcm"), GetPixelData());
 		}
 
@@ -48,7 +49,7 @@ namespace BinaryColorMap
 
 			byte[] pixelNibbles = ConvertByteArrayToNibbleArray(pixelBytes);
 
-			byte[] data = new byte[HeaderSize + pixelNibbles.Length];
+			byte[] data = new byte[headerSize + pixelNibbles.Length];
 
 			data[0] = FrameCount;
 			data[1] = ColorCount;
@@ -57,7 +58,7 @@ namespace BinaryColorMap
 			data[4] = OriginX;
 			data[5] = OriginY;
 
-			Buffer.BlockCopy(pixelNibbles, 0, data, HeaderSize, pixelNibbles.Length);
+			Buffer.BlockCopy(pixelNibbles, 0, data, headerSize, pixelNibbles.Length);
 
 			return data;
 		}
@@ -66,8 +67,8 @@ namespace BinaryColorMap
 		{
 			Bcm bcm = new Bcm(data[0], data[2], data[3], data[4], data[5]);
 
-			byte[] pixelNibbles = new byte[(data.Length - HeaderSize)];
-			Buffer.BlockCopy(data, HeaderSize, pixelNibbles, 0, pixelNibbles.Length);
+			byte[] pixelNibbles = new byte[(data.Length - headerSize)];
+			Buffer.BlockCopy(data, headerSize, pixelNibbles, 0, pixelNibbles.Length);
 
 			byte[] pixelBytes = ConvertNibbleArrayToByteArray(pixelNibbles);
 

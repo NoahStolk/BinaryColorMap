@@ -1,9 +1,8 @@
 ﻿<Window x:Class="BcmEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BcmEditor"
         mc:Ignorable="d"
         Title="BcmEditor" Height="450" Width="800">
 	<Grid>
@@ -14,9 +13,9 @@
 		<DockPanel Grid.Row="0">
 			<Menu Name="MenuPanel" DockPanel.Dock="Top">
 				<MenuItem Header="File">
-					<MenuItem Header="Open BCM" Click="OpenBcm_Click" />
+					<!--<MenuItem Header="Open BCM" Click="OpenBcm_Click" />
 					<MenuItem Header="Open BCP" Click="OpenBcp_Click" />
-					<MenuItem Header="Open PNG" Click="OpenPng_Click" />
+					<MenuItem Header="Open PNG" Click="OpenPng_Click" />-->
 				</MenuItem>
 			</Menu>
 		</DockPanel>

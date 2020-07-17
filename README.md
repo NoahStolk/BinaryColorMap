@@ -5,7 +5,7 @@ BinaryColorMap is an experimental project that implements two custom binary form
 .NET Standard 2.0
 
 ## Language
-C# 7.3
+C# 8.0
 
 ## Dependencies
-- [NetBase](https://github.com/NoahStolk/NetBase)
+N/A
